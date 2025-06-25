@@ -1,0 +1,14 @@
+[project]
+name = "arrayio"
+version = "0.1.0"
+description = "An array I/O library for visual media applications."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=2.0.2",
+    "opencv-python>=4.11.0.86",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
