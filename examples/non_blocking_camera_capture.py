@@ -1,6 +1,6 @@
 import time
 import cv2
-import arrayio
+import immetaio
 
 
 def main():
@@ -22,7 +22,7 @@ def main():
             continue
 
         t0_write = time.time()
-        arrayio.save(f"captured_images/frame{i}.png", frame, nonblock=nonblock)
+        immetaio.save(f"captured_images/frame{i}.png", frame, nonblock=nonblock)
         t1_write = time.time()
 
         t1 = time.time()
@@ -34,7 +34,7 @@ def main():
 
     # Explicitly wait for all non-blocking saves to complete.
     # This is NOT strictly necessary, if you don't access the saved files immediately after this point.
-    arrayio.wait_saves()
+    immetaio.wait_saves()
 
 
 if __name__ == "__main__":

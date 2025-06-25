@@ -1,7 +1,7 @@
 [project]
-name = "arrayio"
+name = "immetaio"
 version = "0.1.0"
-description = "An array I/O library for visual media applications."
+description = "Image and Metadata I/O for Visual Media"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [

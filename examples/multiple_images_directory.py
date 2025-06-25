@@ -1,6 +1,6 @@
 import numpy as np
 import time
-import arrayio
+import immetaio
 
 list_image = []
 list_timestamp = []
@@ -11,12 +11,12 @@ for i in range(20):
     list_timestamp.append(time.time())
     list_number.append(i)
 
-arrayio.save("multi2", list_image, timestamp=list_timestamp, number=list_number)
+immetaio.save("multi2", list_image, timestamp=list_timestamp, number=list_number)
 # -> Saved under multi2/
 # as 0.png, 1.png, ..., 19.png
 # and metadata in 0.json, 1.json, ..., 19.json
 
-list_image, metadata = arrayio.load("multi2")
+list_image, metadata = immetaio.load("multi2")
 list_timestamp = metadata["timestamp"]
 list_number = metadata["number"]
 
