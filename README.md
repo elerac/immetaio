@@ -8,6 +8,8 @@ In computer vision and graphics, we often working with multiple images and their
 While formats like HDF5 or NPZ offer flexibility for bundling images with metadata, they are incompatible with standard image viewers and require specialized tools to access, which complicates debugging and data inspection.
 To address these limitations, arrayio separates image data and metadata into standard image files (like PNG, EXR) and JSON files, respectively. This approach allows images to be easily viewed and processed with common tools while retaining the ability to store rich metadata.
 
+![motivation](docs/motivation.jpg)
+
 ## Installation
 
 ```bash
