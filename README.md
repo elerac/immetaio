@@ -99,8 +99,6 @@ list_number = metadata["number"]
 
 ### Multiple Images (Specifying a Directory)
 
-You can also save and load multiple images by specifying a directory. This is useful for organizing image sequences or batches of images.
-
 ```python
 img0 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 img1 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
@@ -114,9 +112,7 @@ list_image, metadata = immetaio.load("multi_dir")
 
 ### Non-blocking Saving
 
-immetaio supports non-blocking saving, which allows you to save images in the background while your main thread continues processing.
-
-This is particularly useful for time-sensitive applications where you want to avoid blocking the main thread while saving images:
+Non-blocking saving is particularly useful for time-sensitive applications where you want to avoid blocking the main thread while saving images:
 
 ```python
 for i in range(10):
