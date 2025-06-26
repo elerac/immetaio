@@ -104,8 +104,8 @@ img0 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 img1 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
 immetaio.save("multi_dir", [img0, img1], timestamp=[time.time(), time.time()], number=[0, 1])
-# → multi_dir/image_0.png, multi_dir/image_1.png
-# → multi_dir/image_0.json, multi_dir/image_1.json
+# → multi_dir/0.png, multi_dir/1.png
+# → multi_dir/0.json, multi_dir/1.json
 
 list_image, metadata = immetaio.load("multi_dir")
 ```
