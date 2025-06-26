@@ -1,19 +1,12 @@
-import time
 import numpy as np
 import immetaio
 
-# Basic saving
-t = time.time()
-for i in range(20):
-    image = np.random.rand(960, 1280, 3).astype(np.float32)
-    immetaio.save(f"non_blocking/false/myimage_{i}", image)
-print(f"{time.time() - t:.2f} seconds (blocking)")
+for i in range(10):
+    # Get image in time-sensitive processing
+    img = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
-# Non-blocking saving
-t = time.time()
-for i in range(20):
-    image = np.random.rand(960, 1280, 3).astype(np.float32)
-    immetaio.save(f"non_blocking/true/myimage_{i}", image, nonblock=True)
-print(f"{time.time() - t:.2f} seconds (non-blocking)")
+    # Save the current image in non-blocking mode
+    # This allows the main thread to continue processing without waiting for the save operation to complete
+    immetaio.save(f"nonblock/myimage_{i}.png", img, nonblock=True)
 
 immetaio.wait_saves()  # Ensure all non-blocking saves are completed

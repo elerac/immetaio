@@ -8,9 +8,9 @@ When capturing or rendering data, we rarely interact with a single JPEG. More co
 
 immetaio tackles the challenge on three fronts:
 
-1. **Human‑friendly, machine‑ready**: Container formats such as  NPZ or HDF5 pack pixels and metadata together, but they are opaque to everyday image viewers. immetaio instead writes the pixel data to any common image format (PNG, EXR) and stores the metadata alongside it in a plain‑text JSON file. Double‑click the image, open the JSON in your editor—no special tooling required.
+1. **Human‑friendly, machine‑ready**: Container formats such as  NPZ or HDF5 pack pixels and metadata together, but they are opaque to everyday image viewers. immetaio instead writes the pixel data to any common image format (PNG, EXR) and stores the metadata alongside it in a plain‑text JSON file. Double‑click the image and open it in a standard viewer—no special tooling is required.
 
-2. **Asynchronous, high‑throughput I/O**: Bulk I/O of hundreds of 4K floating‑point frames is no joke. immetaio offers asynchronous `save()` and `load()` operations so that encoding, compression, and disk access happen in the background while your main thread keeps crunching numbers.
+2. **Asynchronous, high‑throughput I/O**: Bulk I/O of hundreds of 4K floating‑point frames is no joke. immetaio offers asynchronous `save()` and `load()` operations so that encoding, compression, and disk access to run in parallel. Non-blocking saving keeps your main processing loop-free to continue working.
 
 3. **One‑liner API**: Two verbs, save and load, cover the common cases: single image, image sequences, with or without metadata, integer or float buffers. The functions detect the optimal file format automatically and keep your codebase tidy.
 
@@ -33,126 +33,113 @@ import immetaio
 image = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 metadata = {
     "exposure_time": 0.01,
-    "camera_matrix": np.array([[1000, 0, 320], [0, 1000, 240], [0, 0, 1]]),
-    "timestamp": "2025-06-25T12:00:00"
+    "camera_matrix": [[1000, 0, 320], [0, 1000, 240], [0, 0, 1]],
+    "timestamp": "2025-06-25T12:00:00",
 }
 
-immetaio.save("myimage.png", image, **metadata)
-# -> Saved as myimage.png and myimage.json
+immetaio.save("myimage.png", image, **metadata)  # → myimage.png and myimage.json
 
 image, metadata = immetaio.load("myimage.png")
-# -> metadata is loaded from myimage.json
+exposure_time = metadata["exposure_time"]
+camera_matrix = metadata["camera_matrix"]
+timestamp = metadata["timestamp"]
+```
+
+The metadata is saved as a JSON file (`myimage.json`) as follows:
+
+```json
+{
+    "exposure_time": 0.01,
+    "camera_matrix": [[1000, 0, 320], [0, 1000, 240], [0, 0, 1]],
+    "timestamp": "2025-06-25T12:00:00"
+}
 ```
 
 ### Automatic Fileformat Detection
 
 ```python
-import numpy as np
-import immetaio
-
 img_u8 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
-immetaio.save("myimage_u8", img_u8)
-# -> Saved as myimage_u8.png
+immetaio.save("myimage_u8", img_u8)  # → myimage_u8.png
 
 img_u16 = np.random.randint(0, 65535, (480, 640, 3), dtype=np.uint16)
-immetaio.save("myimage_u16", img_u16)
-# -> Saved as myimage_u16.png
+immetaio.save("myimage_u16", img_u16)  # → myimage_u16.png
 
 img_f32 = np.random.rand(480, 640, 3).astype(np.float32)
-immetaio.save("myimage_f32", img_f32)
-# -> Saved as myimage_f32.exr
+immetaio.save("myimage_f32", img_f32)  # → myimage_f32.exr
 
 img_f64 = np.random.rand(480, 640, 3).astype(np.float64)
-immetaio.save("myimage_f64", img_f64)
-# -> Saved as myimage_f64.npy
+immetaio.save("myimage_f64", img_f64)  # → myimage_f64.npy
 
 vector_f32 = np.linspace(0, 1, 100, dtype=np.float32)
-immetaio.save("myvector", vector_f32)
-# -> Saved as myvector.npy
+immetaio.save("myvector", vector_f32)  # → myvector.npy
 
-tensor_f32 = np.random.rand(10, 10, 10).astype(np.float32)
-immetaio.save("mytensor", tensor_f32)
-# -> Saved as mytensor.npy
+tensor_f32 = np.random.rand(100, 100, 100).astype(np.float32)
+immetaio.save("mytensor", tensor_f32)  # → mytensor.npy
 ```
 
 ### Multiple Images (Explicitly Specifying Filenames)
 
 ```python
-import numpy as np
-import time
-import immetaio
+img_0 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
+img_1 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
-list_image = []
-list_filename = []
-list_timestamp = []
-list_number = []
-for i in range(20):
-    image = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
-    list_image.append(image)
-    list_timestamp.append(time.time())
-    list_number.append(i)
-    list_filename.append(f"multi/myimage_{i}.png")
+immetaio.save(
+    ["myimage_0.png", "myimage_1.png"],
+    [img_0, img_1],
+    timestamp=[time.time(), time.time()],
+    number=[0, 1],
+)
+# → myimage_0.png, myimage_1.png
+# → myimage_0.json, myimage_1.json
 
-immetaio.save(list_filename, list_image, timestamp=list_timestamp, number=list_number)
-# -> Saved under multi/
-# as myimage_0.png, myimage_1.png, ..., myimage_19.png
-# and metadata in multi/myimage_0.json, multi/myimage_1.json, ..., multi/myimage_19.json
-
-list_image, metadata = immetaio.load(list_filename)
+list_image, metadata = immetaio.load(["myimage_0.png", "myimage_1.png"])
 list_timestamp = metadata["timestamp"]
 list_number = metadata["number"]
 ```
 
 ### Multiple Images (Specifying a Directory)
 
+You can also save and load multiple images by specifying a directory. This is useful for organizing image sequences or batches of images.
+
 ```python
-import numpy as np
-import time
-import immetaio
+img0 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
+img1 = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
-list_image = []
-list_timestamp = []
-list_number = []
-for i in range(20):
-    image = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
-    list_image.append(image)
-    list_timestamp.append(time.time())
-    list_number.append(i)
+immetaio.save("multi_dir", [img0, img1], timestamp=[time.time(), time.time()], number=[0, 1])
+# → multi_dir/image_0.png, multi_dir/image_1.png
+# → multi_dir/image_0.json, multi_dir/image_1.json
 
-immetaio.save("multi2", list_image, timestamp=list_timestamp, number=list_number)
-# -> Saved under multi2/
-# as 0.png, 1.png, ..., 19.png
-# and metadata in 0.json, 1.json, ..., 19.json
-
-list_image, metadata = immetaio.load("multi2")
-list_timestamp = metadata["timestamp"]
-list_number = metadata["number"]
+list_image, metadata = immetaio.load("multi_dir")
 ```
 
 ### Non-blocking Saving
 
+immetaio supports non-blocking saving, which allows you to save images in the background while your main thread continues processing.
+
+This is particularly useful for time-sensitive applications where you want to avoid blocking the main thread while saving images:
+
 ```python
-import time
-import numpy as np
-import immetaio
+for i in range(10):
+    # Time-sensitive processing 
+    img = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
-# Basic saving
-t = time.time()
-for i in range(20):
-    image = np.random.rand(960, 1280, 3).astype(np.float32)
-    immetaio.save(f"non_blocking/false/myimage_{i}", image)
-print(f"{time.time() - t:.2f} seconds (blocking)")
-# -> 7.65 seconds (blocking)
-
-# Non-blocking saving
-t = time.time()
-for i in range(20):
-    image = np.random.rand(960, 1280, 3).astype(np.float32)
-    immetaio.save(f"non_blocking/true/myimage_{i}", image, nonblock=True)
-print(f"{time.time() - t:.2f} seconds (non-blocking)")
-# -> 0.44 seconds (non-blocking)
+    # Save the current image in non-blocking mode
+    # This allows the main thread to continue processing without waiting for the save operation to complete
+    immetaio.save(f"nonblock/myimage_{i}.png", img, nonblock=True)
 
 immetaio.wait_saves()  # Ensure all non-blocking saves are completed
 ```
 
-This non-blocking feature is particularly useful for capturing high-speed video streams, where you want to save frames without stalling the main processing loop. See the [examples/non_blocking_camera_capture.py](examples/non_blocking_camera_capture.py) for a complete example.
+For a more practical example, you can save multiple images in multiple threads, enabling high-throughput I/O operations in intuitive code:
+
+```python
+img = np.random.rand(480, 640, 3).astype(np.float32)
+
+# Save the image in non-blocking mode
+immetaio.save("nonblock/myimage_x1.exr", img * 1, nonblock=True)
+immetaio.save("nonblock/myimage_x2.exr", img * 2, nonblock=True)
+immetaio.save("nonblock/myimage_x4.exr", img * 4, nonblock=True)
+immetaio.save("nonblock/myimage_x8.exr", img * 8, nonblock=True)
+
+immetaio.wait_saves()  # Ensure all non-blocking saves are completed
+```

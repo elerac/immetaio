@@ -21,6 +21,6 @@ vector_f32 = np.linspace(0, 1, 100, dtype=np.float32)
 immetaio.save("myvector", vector_f32)
 # -> Saved as myvector.npy
 
-tensor_f32 = np.random.rand(10, 10, 10).astype(np.float32)
+tensor_f32 = np.random.rand(100, 100, 100).astype(np.float32)
 immetaio.save("mytensor", tensor_f32)
 # -> Saved as mytensor.npy
