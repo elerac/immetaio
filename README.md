@@ -10,7 +10,7 @@ immetaio tackles the challenge on three fronts:
 
 1. **Human‑friendly, machine‑ready**: Container formats such as  NPZ or HDF5 pack pixels and metadata together, but they are opaque to everyday image viewers. immetaio instead writes the pixel data to any common image format (PNG, EXR) and stores the user-defined metadata alongside it in a plain‑text JSON file. Double‑click the image and open it in a standard viewer—no special tooling is required.
 
-2. **Asynchronous, high‑throughput I/O**: Bulk I/O of hundreds of 4K floating‑point frames is no joke. immetaio offers asynchronous `save()` and `load()` operations so that encoding, compression, and disk access to run in parallel. Non-blocking saving keeps your main processing loop-free to continue working.
+2. **Asynchronous, high‑throughput I/O**: Bulk I/O of hundreds of 4K floating‑point frames is no joke. immetaio offers asynchronous operations so that encoding, compression, and disk access to run in parallel. Non-blocking saving keeps your main processing loop-free to continue working.
 
 3. **One‑liner API**: Two verbs, save and load, cover the common cases: single image, image sequences, with or without metadata, integer or float buffers. The functions detect the optimal file format automatically and keep your codebase tidy.
 
