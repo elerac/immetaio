@@ -9,54 +9,42 @@ from .types import PathLike
 from . import params
 
 
-def save(filename: PathLike, arr: np.ndarray) -> Path:
-    """Save an array to a file.
+def resolve_filename_of_array(filename: PathLike, arr: np.ndarray) -> Path:
+    """Resolve the appropriate file extension for saving an array based on its shape and dtype.
 
-    If a file extension of array is not specified, the file format is determined based on the array's shape and dtype.
-    Since this module is intended for image data handling, standard image formats are prioritized over the .npy format.
-
-    The following conventions are used for format selection:
-    - `.png` for uint8 or uint16 image
-    - `.exr` for float32 images
-    - `.npy` for any other array type
+    If `filename` already has an extension, it is returned as-is.
+    Otherwise, the extension is chosen according to these rules:
+      - '.png' for 2D or 3-channel/4-channel uint8 or uint16 images.
+      - '.exr' for 2D or 3-channel float32 images.
+      - '.npy' for all other array types.
     """
     filename = Path(filename)
-    ext = filename.suffix
-    if ext != "":  # if the suffix is specified
-        filename_array = filename
-        filename_array.parent.mkdir(parents=True, exist_ok=True)
-        if ext == ".npy":
-            np.save(filename_array, arr)
-            return filename_array
-        else:
-            cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
-            return filename_array
-    else:  # if the suffix is not specified
-        shape = arr.shape
-        dtype = arr.dtype
-        ndim = arr.ndim
-
-        # png (uint8, uint16 image)
-        if (ndim == 2 or (ndim == 3 and shape[-1] in [3, 4])) and (dtype in [np.uint8, np.uint16]):
+    if filename.suffix != "":  # If the extension is already specified, return the filename as is
+        return filename
+    else:  # If the extension is not specified, determine it based on the array properties
+        if (arr.ndim == 2 or (arr.ndim == 3 and arr.shape[-1] in [3, 4])) and (arr.dtype in [np.uint8, np.uint16]):
+            # png (uint8, uint16 image)
             ext = ".png"
-            filename_array = Path(filename).with_suffix(ext)
-            filename_array.parent.mkdir(parents=True, exist_ok=True)
-            cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
-            return filename_array
-
-        # exr (float32 image)
-        if (ndim == 2 or (ndim == 3 and shape[-1] == 3)) and (dtype == np.float32):
+        elif (arr.ndim == 2 or (arr.ndim == 3 and arr.shape[-1] == 3)) and (arr.dtype == np.float32):
+            # exr (float32 image)
             ext = ".exr"
-            filename_array = Path(filename).with_suffix(ext)
-            filename_array.parent.mkdir(parents=True, exist_ok=True)
-            cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
-            return filename_array
+        else:
+            # npy (any array)
+            ext = ".npy"
+        return filename.with_suffix(ext)
 
-        # npy (any array)
-        ext = ".npy"
-        filename_array = Path(filename).with_suffix(ext)
-        filename_array.parent.mkdir(parents=True, exist_ok=True)
+
+def save(filename: PathLike, arr: np.ndarray) -> Path:
+    """Save an array to a file."""
+    filename = Path(filename)
+    filename_array = resolve_filename_of_array(filename, arr)
+
+    filename_array.parent.mkdir(parents=True, exist_ok=True)
+    if filename_array.suffix == ".npy":
         np.save(filename_array, arr)
+        return filename_array
+    else:
+        cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
         return filename_array
 
 
