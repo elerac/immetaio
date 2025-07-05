@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any, Dict, Tuple, Optional
 import numpy as np
-from .types import PathLike
+from .typing import PathLike
 from . import array
 from . import meta
 

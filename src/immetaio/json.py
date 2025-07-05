@@ -2,7 +2,7 @@ from typing import Dict, Any
 from pathlib import Path
 import json
 import numpy as np
-from .types import PathLike
+from .typing import PathLike
 
 
 class NdarrayEncoder(json.JSONEncoder):

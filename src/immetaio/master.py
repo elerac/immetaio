@@ -5,7 +5,7 @@ from . import array_meta
 from . import array_meta_nonblock
 from . import array_meta_multi
 from . import array_meta_dir
-from .types import PathLike
+from .typing import PathLike
 
 
 @overload

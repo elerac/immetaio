@@ -5,7 +5,7 @@ import warnings
 import numpy as np
 from . import array_meta_multi
 from . import meta
-from .types import PathLike
+from .typing import PathLike
 
 
 def _numerical_sort(string):

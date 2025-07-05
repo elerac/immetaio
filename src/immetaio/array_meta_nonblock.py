@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 from . import meta
 from . import array_nonblock
-from .types import PathLike
+from .typing import PathLike
 
 
 def save(filename: PathLike, arr: np.ndarray, **metadata: Any) -> Tuple[Path, Optional[Path]]:

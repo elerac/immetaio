@@ -2,7 +2,7 @@ import atexit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import numpy as np
-from .types import PathLike
+from .typing import PathLike
 from . import array
 
 _executor = ThreadPoolExecutor()

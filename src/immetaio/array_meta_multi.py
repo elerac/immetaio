@@ -3,7 +3,7 @@ from typing import Any, Tuple, Dict, List, Optional
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 from . import array_meta
-from .types import PathLike
+from .typing import PathLike
 
 
 def save(filenames: List[PathLike], arrs: List[np.ndarray], max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]:
