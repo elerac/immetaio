@@ -43,9 +43,11 @@ def save(filename: PathLike, arr: np.ndarray) -> Path:
     if filename_array.suffix == ".npy":
         np.save(filename_array, arr)
         return filename_array
-    else:
         cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
+    elif cv2.haveImageWriter(str(filename_array)):
         return filename_array
+    else:
+        raise ValueError(f"Cannot save array to '{filename_array}': no suitable writer found.")
 
 
 def load(filename_array: PathLike) -> np.ndarray:
@@ -56,5 +58,7 @@ def load(filename_array: PathLike) -> np.ndarray:
 
     if filename_array.suffix == ".npy":
         return np.load(filename_array)
-    else:
+    elif cv2.haveImageReader(str(filename_array)):
         return cv2.imread(str(filename_array), cv2.IMREAD_UNCHANGED)
+    else:
+        raise ValueError(f"Cannot load array from '{filename_array}': no suitable reader found.")
