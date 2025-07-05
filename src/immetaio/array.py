@@ -9,7 +9,7 @@ from .types import PathLike
 from . import params
 
 
-def resolve_filename_of_array(filename: PathLike, arr: np.ndarray) -> Path:
+def get_filename(filename: PathLike, arr: np.ndarray) -> Path:
     """Resolve the appropriate file extension for saving an array based on its shape and dtype.
 
     If `filename` already has an extension, it is returned as-is.
@@ -37,7 +37,7 @@ def resolve_filename_of_array(filename: PathLike, arr: np.ndarray) -> Path:
 def save(filename: PathLike, arr: np.ndarray) -> Path:
     """Save an array to a file."""
     filename = Path(filename)
-    filename_array = resolve_filename_of_array(filename, arr)
+    filename_array = get_filename(filename, arr)
 
     filename_array.parent.mkdir(parents=True, exist_ok=True)
     if filename_array.suffix == ".npy":
