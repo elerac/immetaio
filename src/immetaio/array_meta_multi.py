@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Any, Tuple, Dict, List, Optional
 from concurrent.futures import ThreadPoolExecutor
+import warnings
 import numpy as np
 from . import array_meta
 from .typing import PathLike
@@ -64,6 +65,10 @@ def load(filenames_array: List[PathLike], filenames_meta: Optional[List[Optional
     # Ensure filenames_array and filenames_meta have the same length
     if len(filenames_array) != len(filenames_meta):
         raise ValueError(f"filenames_array and filenames_meta must have the same length ({len(filenames_array)} != {len(filenames_meta)}).")
+
+    if len(filenames_array) == 0:
+        warnings.warn("No filenames provided. Returning empty arrays and metadata.")
+        return [], {}
 
     results = []
     if max_workers == 1:
