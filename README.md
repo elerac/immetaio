@@ -1,6 +1,9 @@
 # immetaio: Image and Metadata I/O for Visual Media
 
-**immetaio** (**im**age + **meta**data + **io**) is a Python library that provides saving and loading image arrays and their associated metadata. It is built for computer vision, graphics, and computational imaging workloads where every image paired with user-defined metadata.
+**immetaio** (**im**age + **meta**data + **io**) is a Python library that provides saving and loading image arrays and their associated metadata. It is built for computer vision, graphics, and computational imaging workloads where every image is paired with metadata.
+
+> [!NOTE]
+> In this context, “metadata” refers to **user‑defined metadata supplied as Python dicts**. It does NOT mean the metadata embedded inside image files themselves. immetaio neither reads nor writes EXIF.
 
 ## Motivation
 
@@ -8,7 +11,7 @@ When capturing or rendering data, we rarely interact with a single JPEG. More co
 
 immetaio tackles the challenge on three fronts:
 
-1. **Human‑friendly, machine‑ready**: Container formats such as  NPZ or HDF5 pack pixels and metadata together, but they are opaque to everyday image viewers. immetaio instead writes the pixel data to any common image format (PNG, EXR) and stores the user-defined metadata alongside it in a plain‑text JSON file. Double‑click the image and open it in a standard viewer—no special tooling is required.
+1. **Human‑friendly, machine‑ready**: Container formats such as NPZ or HDF5 pack pixels and metadata together, but they are opaque to everyday image viewers. immetaio instead writes the pixel data to any common image format (PNG, EXR) and stores the user-defined metadata alongside it in a plain‑text JSON file. Double‑click the image and open it in a standard viewer—no special tooling is required.
 
 2. **Asynchronous, high‑throughput I/O**: Bulk I/O of hundreds of 4K floating‑point frames is no joke. immetaio offers asynchronous operations so that encoding, compression, and disk access to run in parallel. Non-blocking saving keeps your main processing loop-free to continue working.
 
@@ -49,9 +52,13 @@ The metadata is saved as a JSON file (`myimage.json`) as follows:
 
 ```json
 {
-    "exposure_time": 0.01,
-    "camera_matrix": [[1000, 0, 320], [0, 1000, 240], [0, 0, 1]],
-    "timestamp": "2025-06-25T12:00:00"
+  "exposure_time": 0.01,
+  "camera_matrix": [
+    [1000, 0, 320],
+    [0, 1000, 240],
+    [0, 0, 1]
+  ],
+  "timestamp": "2025-06-25T12:00:00"
 }
 ```
 
@@ -116,7 +123,7 @@ Non-blocking saving is particularly useful for time-sensitive applications where
 
 ```python
 for i in range(10):
-    # Time-sensitive processing 
+    # Time-sensitive processing
     img = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
 
     # Save the current image in non-blocking mode
