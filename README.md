@@ -7,7 +7,7 @@
 
 ## Motivation
 
-When capturing or rendering data, we rarely interact with a single JPEG. More commonly, we acquire dozens—or even hundreds—of high‑resolution frames of the same scene under different conditions, such as exposure times, lighting setups, or viewpoints, each carrying rich metadata. Persisting this bundle in a form that is both **human‑readable** and **machine‑parsable** is harder than it seems.
+When capturing or rendering images, we rarely interact with a single JPEG. More commonly, we acquire dozens—or even hundreds—of high‑resolution frames of the same scene under different conditions, such as exposure times, lighting setups, or viewpoints, each carrying rich metadata. Persisting this bundle in a form that is both **human‑readable** and **machine‑parsable** is harder than it seems.
 
 immetaio tackles the challenge on three fronts:
 
