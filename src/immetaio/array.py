@@ -43,8 +43,10 @@ def save(filename: PathLike, arr: np.ndarray) -> Path:
     if filename_array.suffix == ".npy":
         np.save(filename_array, arr)
         return filename_array
-        cv2.imwrite(str(filename_array), arr, params.cv2_imwrite_params)
     elif cv2.haveImageWriter(str(filename_array)):
+        ext = filename_array.suffix
+        p = params.cv2_imwrite_params.get(ext, [])
+        cv2.imwrite(str(filename_array), arr, p)
         return filename_array
     else:
         raise ValueError(f"Cannot save array to '{filename_array}': no suitable writer found.")
