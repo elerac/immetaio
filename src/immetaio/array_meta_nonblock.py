@@ -1,29 +1,16 @@
-import atexit
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any
+from typing import Any, Optional, Tuple
+from pathlib import Path
 import numpy as np
+from . import meta
+from . import array_nonblock
 from .types import PathLike
-from . import array_meta
-
-_executor = ThreadPoolExecutor()
-_futures = []
 
 
-def wait_saves():
-    """Wait for all pending background saves to complete."""
-    for fut in as_completed(_futures):
-        fut.result()
-
-
-def _shutdown_executor():
-    wait_saves()
-    _executor.shutdown(wait=True)
-
-
-atexit.register(_shutdown_executor)
-
-
-def save(filename: PathLike, arr: np.ndarray, **metadata: Any):
-    """Save an array and optional metadata in a non-blocking way."""
-    fut = _executor.submit(array_meta.save, filename, arr, **metadata)
-    _futures.append(fut)
+def save(filename: PathLike, arr: np.ndarray, **metadata: Any) -> Tuple[Path, Optional[Path]]:
+    filename_array = array_nonblock.save(filename, arr)
+    if metadata:
+        filename_meta = Path(filename_array).with_suffix(meta.ext)
+        meta.save(filename_meta, **metadata)
+    else:
+        filename_meta = None
+    return filename_array, filename_meta

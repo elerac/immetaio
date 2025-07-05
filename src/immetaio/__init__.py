@@ -4,6 +4,6 @@
 **immetaio** (**im**age + **meta**data + **io**) is a Python library that provides saving and loading image arrays and their associated metadata. It is built for computer vision, graphics, and computational imaging workloads where every image paired with user-defined metadata.
 """
 
-from .array_meta_nonblock import wait_saves
+from .array_nonblock import wait_saves
 from .master import save, load
 from .types import PathLike
