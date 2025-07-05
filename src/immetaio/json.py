@@ -81,7 +81,7 @@ def format_json(obj: Any, indent: int = 4, level: int = 0) -> str:
         return json.dumps(obj)
 
 
-def save(filename_json: PathLike, **data: Any) -> None:
+def save(filename_json: PathLike, **data: Any) -> Path:
     """Save dictionary to a json file."""
     filename_json = Path(filename_json)
     filename_json.parent.mkdir(parents=True, exist_ok=True)
@@ -94,6 +94,8 @@ def save(filename_json: PathLike, **data: Any) -> None:
     formatted_data = format_json(data, indent=4)
     with open(filename_json, "w") as f:
         f.write(formatted_data + "\n")
+
+    return filename_json
 
 
 def load(filename_json: PathLike) -> Dict[str, Any]:
