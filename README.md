@@ -161,3 +161,25 @@ immetaio.meta.save("myimage.json", **metadata)
 
 metadata = immetaio.meta.load("myimage.json")
 ```
+
+## Architecture Overview
+
+This library consists of modular components, each tailored to handle specific data types. Every module implements `save` and `load` functions for its respective data type. These modules are finally integrated into `master.py`, which serves as the main interface for saving and loading images and metadata. For advanced use cases, you can also interact with the individual modules directly to gain more control.
+
+The mermaid diagram below illustrates the dependency graph between the modules:
+
+```mermaid
+flowchart TB
+    json.py --> |save/load| meta.py
+    meta.py --> |save/load| array_meta.py
+    array.py --> |save/load| array_meta.py
+    array.py --> |save| array_nonblock.py
+    array_nonblock.py --> |save| array_meta_nonblock.py
+    meta.py --> |save| array_meta_nonblock.py
+    array_meta.py --> |save/load| array_meta_multi.py
+    array_meta_multi.py --> |save/load| array_meta_dir.py
+    array_meta_multi.py --> |save/load| master.py
+    array_meta_dir.py --> |save/load| master.py
+    array_meta.py --> |save/load| master.py
+    array_meta_nonblock.py --> |save| master.py
+```
