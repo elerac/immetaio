@@ -1,6 +1,5 @@
 import numpy as np
 import immetaio
-import immetaio.meta
 
 
 image = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
