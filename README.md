@@ -152,8 +152,6 @@ immetaio.wait_saves()  # Ensure all non-blocking saves are completed
 You can also save and load metadata independently.
 
 ```python
-import immetaio.meta
-
 metadata = {
     "exposure_time": 0.01,
     "camera_matrix": [[1000, 0, 320], [0, 1000, 240], [0, 0, 1]],
