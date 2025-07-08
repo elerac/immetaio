@@ -61,6 +61,9 @@ def load(filename_array: PathLike) -> np.ndarray:
     if filename_array.suffix == ".npy":
         return np.load(filename_array)
     elif cv2.haveImageReader(str(filename_array)):
-        return cv2.imread(str(filename_array), cv2.IMREAD_UNCHANGED)
+        ret = cv2.imread(str(filename_array), cv2.IMREAD_UNCHANGED)
+        if ret is None:
+            raise ValueError(f"Failed to read image from '{filename_array}'. The file may be corrupted or unsupported.")
+        return ret
     else:
         raise ValueError(f"Cannot load array from '{filename_array}': no suitable reader found.")
