@@ -20,8 +20,8 @@ def save(filenames: List[PathLike], arrs: List[np.ndarray], max_workers: Optiona
     # Ensure metadata is a dictionary with lists of the same length as arrays
     keys = list(metadata.keys())
     for key in keys:
-        if not isinstance(metadata[key], list):
-            raise TypeError(f"metadatas['{key}'] must be a list.")
+        if not hasattr(metadata[key], "__len__") or isinstance(metadata[key], (str, bytes)):
+            raise TypeError(f"metadatas['{key}'] must be a list-like object.")
         if len(metadata[key]) != len(arrs):
             raise ValueError(f"The length of metadatas['{key}'] ({len(metadata[key])}) must match the length of arrays ({len(arrs)}).")
 
