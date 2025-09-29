@@ -45,6 +45,8 @@ def save(dirname: PathLike, arrs: List[np.ndarray], max_workers: Optional[int] =
     """Save multiple arrays and optional metadata in a directory."""
     dirname = Path(dirname)
     filenames_array = [dirname / f"{i}" for i in range(len(arrs))]
+    if isinstance(arrs, np.ndarray):
+        arrs = arrs.tolist()
     return array_meta_multi.save(filenames_array, arrs, max_workers=max_workers, **metadata)
 
 
