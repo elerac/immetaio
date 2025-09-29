@@ -1,19 +1,19 @@
 from pathlib import Path
-from typing import Any, Tuple, Dict, List, Optional
+from typing import Any, Tuple, Dict, List, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor
 import warnings
 import numpy as np
+import numpy.typing as npt
 from . import array_meta
 from .typing import PathLike
 
 
-def save(filenames: List[PathLike], arrs: List[np.ndarray], max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]:
+def save(filenames: List[PathLike], arrs: npt.ArrayLike, max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]:
     """Save multiple arrays and optional metadata in parallel."""
-    # Ensure filenames and arrays are lists
-    if not isinstance(filenames, list):
-        raise TypeError("filenames must be a list of PathLike objects.")
-    if not isinstance(arrs, list):
-        raise TypeError("arrays must be a list of numpy arrays.")
+    arrs = np.asarray(arrs)
+
+    if not isinstance(filenames, Iterable) or isinstance(filenames, (str, bytes)):
+        raise TypeError("filenames must be iterable.")
     if len(filenames) != len(arrs):
         raise ValueError(f"filenames and arrays must have the same length ({len(filenames)} != {len(arrs)}).")
 

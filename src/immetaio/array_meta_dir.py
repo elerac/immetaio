@@ -3,6 +3,7 @@ from typing import Any, Tuple, List, Dict, Optional
 import re
 import warnings
 import numpy as np
+import numpy.typing as npt
 from . import array_meta_multi
 from . import meta
 from .typing import PathLike
@@ -41,12 +42,11 @@ def retrieve_array_meta_files(dirname: PathLike) -> Tuple[List[Path], List[Optio
     return filenames_array, filenames_meta
 
 
-def save(dirname: PathLike, arrs: List[np.ndarray], max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]:
+def save(dirname: PathLike, arrs: npt.ArrayLike, max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]:
     """Save multiple arrays and optional metadata in a directory."""
     dirname = Path(dirname)
+    arrs = np.asarray(arrs)
     filenames_array = [dirname / f"{i}" for i in range(len(arrs))]
-    if isinstance(arrs, np.ndarray):
-        arrs = arrs.tolist()
     return array_meta_multi.save(filenames_array, arrs, max_workers=max_workers, **metadata)
 
 

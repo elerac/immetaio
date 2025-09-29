@@ -1,6 +1,7 @@
 from typing import Any, Tuple, Optional, Dict, List, overload
 from pathlib import Path
 import numpy as np
+import numpy.typing as npt
 from . import array_meta
 from . import array_meta_nonblock
 from . import array_meta_multi
@@ -11,9 +12,9 @@ from .typing import PathLike
 @overload
 def save(target: PathLike, arr: np.ndarray, nonblock: bool = False, **metadata: Any) -> Tuple[Path, Optional[Path]]: ...
 @overload
-def save(target: List[PathLike], arr: List[np.ndarray], max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]: ...
+def save(target: List[PathLike], arr: npt.ArrayLike, max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]: ...
 @overload
-def save(target: PathLike, arr: List[np.ndarray], max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]: ...
+def save(target: PathLike, arr: npt.ArrayLike, max_workers: Optional[int] = None, **metadata: List[Any]) -> List[Tuple[Path, Optional[Path]]]: ...
 
 
 def save(target, arr, nonblock=False, max_workers=None, **metadata):
